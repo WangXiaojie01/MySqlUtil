@@ -14,7 +14,7 @@ if os.path.exists(codePath):
 from MysqlUtil import MySqlUtil
 
 if __name__ == "__main__":
-    mysqlUtil = MySqlUtil()
-    mysqlUtil.connect("localhost", "root", "123456", "test", 3306)
-    result = mysqlUtil.execute("show databases;")
+    mysqlUtil = MySqlUtil() #实例化一个对象实例
+    mysqlUtil.connect("localhost", "root", "123456", "test", 3306) #连接数据库
+    result = mysqlUtil.execute("show databases;") #执行sql语句
     print(result)

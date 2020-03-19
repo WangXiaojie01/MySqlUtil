@@ -13,3 +13,6 @@
 
 4. 执行要执行的sql语句
   `databases = mysqlUtil.execute("show databases;")`
+
+####说明
+- 该工具需要安装pymysql模块，不支持python2.7版本
