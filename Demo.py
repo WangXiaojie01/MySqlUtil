@@ -2,7 +2,7 @@
 #-*- coding:utf8 -*-
 
 '''
-copyright @wangxiaojie 2020.01.18
+copyright @wangxiaojie 2020.03.19
 author: wangxiaojie
 '''
 
@@ -16,5 +16,5 @@ from MysqlUtil import MySqlUtil
 if __name__ == "__main__":
     mysqlUtil = MySqlUtil()
     mysqlUtil.connect("localhost", "root", "123456", "test", 3306)
-    databases = mysqlUtil.execute("show databases;")
-    print(databases)
+    result = mysqlUtil.execute("show databases;")
+    print(result)

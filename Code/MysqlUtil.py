@@ -2,15 +2,20 @@
 #-*- coding:utf8 -*-
 
 '''
-copyright @wangxiaojie 2020.01.18
+copyright @wangxiaojie 2020.03.18
 author: wangxiaojie
 '''
 
-import MySQLdb
+import os, sys
+import logging
+import pymysql
 
 __all__ = [
     "MySqlUtil", 
+    "mysqlLogger"
     ]
+
+mysqlLogger = logging.Logger("MySqlUtil")
     
 class MySqlUtil(object):
     def __init__(self):
@@ -29,36 +34,40 @@ class MySqlUtil(object):
                 self.connection.close()
                 self.connection = None
         except Exception as e:
-            print("MySQL close error %s", e.message)
+            mysqlLogger.error("MySQL close error, error is %s", e)
 
     def connect(self, host, user, password, db, port=3306, charset='utf8'):
         try:
             self.close()
-            self.connection = MySQLdb.connect(host=host, user=user, passwd=password, db=db, port=port, charset=charset)
-            self.cursor = self.connection.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+            self.connection = pymysql.connect(host=host, user=user, passwd=password, db=db, port=port, charset=charset)
+            self.cursor = self.connection.cursor()
             return True
         except Exception as e:
-            print("MySQL connect error %s", e.message)
+            mysqlLogger.error("MySQL connect error, error is %s", e)
             return False
 
     def execute(self, sql):
         if self.cursor == None:
             errorMsg = "execute '%s' whith a None cursor, please make sure your MysqlServer is working and please call connect first" % sql
-            print(errorMsg)
-            return errorMsg
+            mysqlLogger.error(errorMsg)
+            return False, 0, errorMsg
         result = ""
         try:
-            self.cursor.execute(sql)
-            result = self.cursor.fetchall()
+            resultNum = self.cursor.execute(sql)
+            resultRow = self.cursor.fetchall()
             self.connection.commit()
         except Exception as e:
-            print("MySQL -- %s -- Execute Error %s", sql, e.message)
-            return e.message
-        return result
+            mysqlLogger.error("MySQL execute  '%s' error, error is %s", sql, e)
+            return False, 0, e
+        return True, resultNum, resultRow
+        
 
 if __name__ == "__main__":
+    print("test")
+    
     mysqlUtil = MySqlUtil()
     mysqlUtil.connect("localhost", "root", "123456", "test", 3306)
-    databases = mysqlUtil.execute("show databases;")
-    print(databases)
+    result = mysqlUtil.execute("show databases;")
+    print(result)
+    
     
